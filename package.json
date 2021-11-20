@@ -2,8 +2,12 @@
   "name": "simple-app",
   "version": "1.0.0",
   "description": "Simple app",
+  "engines": {
+    "node": "14.x"
+  },
   "main": "index.js",
   "scripts": {
+    "postinstall": "npm run build",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
