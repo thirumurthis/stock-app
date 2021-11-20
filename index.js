@@ -2,6 +2,8 @@ const express = require('express')
 const path = require("path");
 const app = express()
 const port = process.env.PORT || 5000
+var compression = require('compression')
+app.use(compression())
 const request = require('request')
 const bodyParser = require("body-parser");
 app.use(express.urlencoded({extended: true }))
@@ -16,52 +18,25 @@ router.get('/',function(req,res){
   res.sendFile(path.join(__dirname+'/public/index.html'));
 });
 
+const baseUrl = 'https://my-stock-boot-app.herokuapp.com';
+const ALREADY_REGISTERED_STR = "already a registered";
 
-//Below is working - not used 
-app.post('/submit-form1', (req,res)=> {
-    const username = req.body.username
-    const password = req.body.password;
-    let content = {"userName": username, "password": password};
-    console.log("POST options info in submit-form request way:- "+content)
-    if(username == null || username == '' || username == undefined 
-    || password == null || password == undefined || password == ''){
-      res.render("response",{statusMessage:"not found", apiKey : null});
-      return;
-    }
-  request({
-      url: 'https://my-stock-boot-app.herokuapp.com/stock-app/signup', //URL to hit
-      // qs: {from: 'example', time: +new Date()}, //Query string data
-      method: 'POST', // specify the request type
-      headers: {'Content-Type': 'application/json'}, // speciyfy the headers
-      json: true,
-      body: content //Set the body as a stringify
-    }, function(error, response, body){
-      if(error) {
-          console.log(error);
-      } else {
-          response.setEncoding('utf-8')
-          //console.log(response.statusCode, body);
-          if(response.statusCode != 200 ){
-              res.render("response",{statusMessage : "Access failed!!",apiKey : null})
-          }
-    }
-  });
-});
 // Working version still requires additional scenarios to handle
-app.post('/submit-form', (req,res)=> {
+app.post('/submit', (req,res)=> {
   const username = req.body.username
   const password = req.body.password;
   const content = {"userName": username, "password": password};
   let apiKeyVal  = null;
   let tokenVal = null;
-  console.log("POST options info in submit-form request way:- "+content)
+  console.log("Form submitted")
   if(username == null || username == '' || username == undefined 
   || password == null || password == undefined || password == ''){
     res.render("response",{statusMessage:"not found", apiKey : null});
     return;
   }
-request({
-    url: 'https://my-stock-boot-app.herokuapp.com/stock-app/signup', //URL to hit
+  //1. start with the user to sign up
+  request({
+    url: baseUrl +'/stock-app/signup', //URL to hit
     method: 'POST', // specify the request type
     headers: {'Content-Type': 'application/json'}, // speciyfy the headers
     json: true,
@@ -69,8 +44,9 @@ request({
   }, function(error, response, body){
     if(error) {
         console.log(error);
-        res.render("response",{statusMessage : "Access failed!!",apiKey : null})
+        res.render("response",{statusMessage : "Failed to signup.",apiKey : null})
     } else {
+        // If the signup is successfull, check new user or existing user
         response.setEncoding('utf-8');
         //console.log(response.statusCode, body);
         if(response.statusCode == 200 ){
@@ -80,31 +56,32 @@ request({
           if(apiKeyVal != null  && apiKeyVal != undefined && apiKeyVal != ''){
             let tokContent = {"userName": username, "apiKey" : apiKeyVal};
             request({
-              url: 'https://my-stock-boot-app.herokuapp.com/stock-app/token', //URL to hit
+              url: baseUrl +'/stock-app/token', //URL to hit
               method: 'POST', // specify the request type
-              headers: {'Content-Type': 'application/json'}, // speciyfy the headers
+              headers: {'Content-Type': 'application/json'}, 
               json: true,
               body: tokContent //Set the body as a stringify
             }, function(error, response, body){
               if(error) {
                   console.log(error);
-                  res.render("response",{statusMessage : "Token Access failed!!",apiKey : null})
+                  res.render("response",{statusMessage : "Failed to get token",apiKey : null})
               } else {
                   response.setEncoding('utf-8')
                   console.log(response.statusCode, body);
                   if(response.statusCode == 200 ){
-                    console.log(body);
-                    tokenVal = body.jwtToken;
-                    console.log(tokenVal);
+                    //console.log(body);
+                    //tokenVal = body.jwtToken;
+                    res.render("response",{statusMessage : "User Registered, functionality not yet implemented",apiKey : null})
+                    //console.log(tokenVal);
                   }else
-                      res.render("response",{statusMessage : "Token Access failed!!",apiKey : null})
+                      res.render("response",{statusMessage : "Failed to get token",apiKey : null})
                   }
             });
           }else{
             // check if the user account is already registered
-            if (statusFromSignup != null && statusFromSignup != '' && statusFromSignup.includes("already a registered")){
+            if (statusFromSignup != null && statusFromSignup != '' && statusFromSignup.includes(ALREADY_REGISTERED_STR)){
               request({
-                url: 'https://my-stock-boot-app.herokuapp.com/stock-app/apikey', //URL to hit
+                url: baseUrl +'/stock-app/apikey', //URL to hit
                 method: 'POST', // specify the request type
                 headers: {'Content-Type': 'application/json'}, // speciyfy the headers
                 json: true,
@@ -124,7 +101,7 @@ request({
                       if(tokenVal != null && tokenVal != undefined){
                         let tokContent = {"userName": username, "apiKey" : apiKeyVal};
                         request({
-                          url: 'https://my-stock-boot-app.herokuapp.com/stock/v1/stock-info',
+                          url: baseUrl +'/stock/v1/stock-info',
                           method: 'POST', // specify the request type
                           headers: {
                                   'Content-Type': 'application/json',
