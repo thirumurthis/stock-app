@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require("path");
 const app = express()
-const port = 3000
+const port = process.env.port || 3000
 const request = require('request')
 const bodyParser = require("body-parser");
 app.use(express.urlencoded({extended: true }))
@@ -9,7 +9,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
   //use express template 
 app.set("view engine","ejs");
 app.use(express.static(path.join(__dirname, "public")));
-app.get('/', (req, res) => res.send('Welcome to Make REST API Calls In Express!'))
+
+const router = express.Router();
+app.use('/', router);
+router.get('/',function(req,res){
+  res.sendFile(path.join(__dirname+'public/index.html'));
+});
+
 
 //Below is working - not used 
 app.post('/submit-form1', (req,res)=> {
