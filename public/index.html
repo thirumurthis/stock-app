@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+      <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="style-css.css">    
+    <title>STOCK APP</title>
+</head>
+
+<body>
+    <!-- Here a loader is created which
+			loads till response comes -->
+    <!-- 
+        <div class="d-flex justify-content-center">
+			<div class="spinner-border"
+				role="status" id="loading">
+				<span class="sr-only">Loading...</span>
+			</div>
+		</div>
+    -->
+    <h2>Stock App</h2><br>
+    <div class="login">
+        <form id="login" method="POST" action="/submit-form">
+            <label><b>User Name</b></label>
+            <input type="text" name="username" id="username" placeholder="Username">
+            <br><br>
+            <label><b>Password</b></label>
+            <input type="Password" name="password" id="password" placeholder="Password">
+            <br><br>
+            <input type="submit" name="log" id="log" value="Login">
+            <br>
+        </form>
+    </div>
+</body>
+
+</html>
