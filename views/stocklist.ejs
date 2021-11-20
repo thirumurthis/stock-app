@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STOCK APP</title>
+    <style>
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+        
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+        </style>
+</head>
+
+<body>
+<h2>Stock App</h2><br>
+<table>
+    <tr>
+      <th>Symbol</th>
+      <th>Company Name</th>
+      <th>Current Price</th>
+      <th>Invested Amount</th>
+      <th>Total Returns</th>
+      <th>Profit/ Loss Returns</th>
+      <th>Profit/Loss</th>
+    </tr>
+ <!-- {"symbol":"MSFT",
+    "currentPrice":343.11,
+    "companyName":"Microsoft Corporation",
+    "lastAccessed":"2021-11-20T19:50:28.340751",
+    "currentInvestedAmount":100.00,
+    "actualInvestedAmount":110.00,
+    "difference":10.00,
+    "profitOrLoss":"** Profit **"}-->
+    <% for(let i =0;i < stockInfo.length; i++){ %>
+        <tr>
+           <td> <%= stockInfo[i].symbol %> </td>
+           <td> <%= stockInfo[i].companyName %></td>
+           <td> <%= stockInfo[i].currentPrice %></td>
+           <td> <%= stockInfo[i].actualInvestedAmount %></td>
+           <td> <%= stockInfo[i].currentInvestedAmount %></td>
+           <td> <%= stockInfo[i].difference %> </td>
+           <td><%= stockInfo[i].profitOrLoss %></td>
+        </tr>
+      <% } %>
+</table>
+<label>Overall status:</label>
+<br>
+<!--
+    "investedAmount":100.965,
+    "currentMarketTotalAmount":200.79,
+    "difference":1000.824,
+    "profitLossStatus":"**PROFIT**",
+    "lastAccessed":"2021-11-20T19:50:28.509317",
+    "simpleStatus":"Successfully computed."
+-->
+<table>
+  <tr>
+    <th>Total Invested Amount</th>
+    <th>Current Market Value </th>
+    <th>Today total Gain/Loss </th>
+    <th>Profit/Loss</th>
+    <th>Last Accessed Date</th>
+ </tr>
+ <tr>
+     <td><%= investedAmount %></td>
+     <td><%= currentMarketTotalAmount %></td>
+     <td><%= difference %></td>
+     <td><%= profitLossStatus %></td>
+     <td><%= lastAccessed %></td>
+ </tr>
+</table>
+</body>
+</html>
