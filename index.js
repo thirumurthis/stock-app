@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require("path");
 const app = express()
-const port = process.env.port || 3000
+const port = process.env.port || 5000
 const request = require('request')
 const bodyParser = require("body-parser");
 app.use(express.urlencoded({extended: true }))
@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, "public")));
 const router = express.Router();
 app.use('/', router);
 router.get('/',function(req,res){
-  res.sendFile(path.join(__dirname+'public/index.html'));
+  res.sendFile(path.join(__dirname+'/public/index.html'));
 });
 
 
@@ -166,4 +166,4 @@ request({
     }
 });
 });
-app.listen(port, () => console.log(`App listening on port ${port}!`))
+app.listen(port, () => console.log(`App Started and listening on port ${port}!`))
